@@ -19,6 +19,7 @@ export async function loginAction(email: string, password: string) {
     console.log("[v0] loginAction: Supabase response - error:", error, "user:", data?.user?.id)
 
     if (error) {
+      console.error("[v0] loginAction error:", error)
       console.log("[v0] loginAction: Returning error:", error.message)
       return { error: error.message }
     }
@@ -36,10 +37,10 @@ export async function loginAction(email: string, password: string) {
       return result
     }
 
-    console.log("[v0] loginAction: No user in response")
+    console.error("[v0] loginAction: No user in response for", email)
     return { error: "Erro ao fazer login" }
   } catch (err: any) {
-    console.log("[v0] loginAction: Exception caught:", err.message)
+    console.error("[v0] loginAction exception:", err)
     return { error: err.message || "Erro ao fazer login" }
   }
 }
