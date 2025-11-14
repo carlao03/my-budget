@@ -31,19 +31,35 @@ export default function LoginPage() {
       console.log("[v0] Login: Result type:", typeof result)
       console.log("[v0] Login: Result keys:", result ? Object.keys(result) : "null")
 
+      if (result === undefined) {
+        console.log("[v0] Login: Result undefined, assuming middleware redirect handled navigation")
+        router.push("/dashboard")
+        router.refresh()
+        setIsLoading(false)
+        return
+      }
+
       if (result?.error) {
         console.log("[v0] Login: Error occurred:", result.error)
         setError(result.error)
         setIsLoading(false)
-      } else if (result?.success && "user" in result && result.user) {
-        console.log("[v0] Login: Success! Saving user to localStorage:", result.user)
-        localStorage.setItem("currentUser", JSON.stringify(result.user))
+      } else if (result?.success) {
+        const user = "user" in result ? result.user : undefined
 
-        const saved = localStorage.getItem("currentUser")
-        console.log("[v0] Login: Verified localStorage:", saved)
+        if (user) {
+          console.log("[v0] Login: Success! Saving user to localStorage:", user)
+          localStorage.setItem("currentUser", JSON.stringify(user))
+
+          const saved = localStorage.getItem("currentUser")
+          console.log("[v0] Login: Verified localStorage:", saved)
+        } else {
+          console.log("[v0] Login: Success without user payload, relying on Supabase session")
+        }
 
         console.log("[v0] Login: Redirecting to dashboard")
         router.push("/dashboard")
+        router.refresh()
+        setIsLoading(false)
       } else {
         console.log("[v0] Login: Unexpected result format:", result)
         setError("Erro inesperado ao fazer login")
@@ -57,7 +73,7 @@ export default function LoginPage() {
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 to-indigo-100 p-4">
+    <div className="min-h-screen flex items-center justify-center bg-linear-to-br from-blue-50 to-indigo-100 p-4">
       <Card className="w-full max-w-md">
         <CardHeader className="space-y-1">
           <CardTitle className="text-2xl font-bold text-center">Bem-vindo de volta</CardTitle>
