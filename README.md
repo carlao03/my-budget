@@ -52,4 +52,9 @@ Aplicacao web construida com Next.js e Supabase para gerenciar financas pessoais
 - Rode `pnpm lint` antes de gerar o build para capturar problemas comuns.
 - Ao trocar de branch, execute `pnpm install` para garantir que `node_modules/` esteja atualizado.
 
+## Iteracao 2
+- Ajuste do fluxo de login para lidar com o retorno das server actions e garantir que a sessao do Supabase seja aplicada apos o redirecionamento.
+- Middleware atualizado para permitir rotas internas do Next.js e evitar redirecionamentos inesperados durante a autenticacao.
+- Documentacao revisada com instrucoes completas de configuracao local para novos desenvolvedores.
+
 Seguindo esses passos o projeto deve rodar localmente sem problemas. Boas contribuicoes!
