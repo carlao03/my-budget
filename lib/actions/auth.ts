@@ -21,12 +21,14 @@ export async function loginAction(email: string, password: string) {
     if (error) {
       console.error("[v0] loginAction error:", error)
       console.log("[v0] loginAction: Returning error:", error.message)
-      return { error: error.message }
+      // Return plain object
+      return { error: error.message, success: false }
     }
 
     if (data.user) {
       const result = {
         success: true,
+        error: null,
         user: {
           id: data.user.id,
           email: data.user.email || email,
@@ -38,10 +40,10 @@ export async function loginAction(email: string, password: string) {
     }
 
     console.error("[v0] loginAction: No user in response for", email)
-    return { error: "Erro ao fazer login" }
+    return { error: "Erro ao fazer login", success: false }
   } catch (err: any) {
     console.error("[v0] loginAction exception:", err)
-    return { error: err.message || "Erro ao fazer login" }
+    return { error: err.message || "Erro ao fazer login", success: false }
   }
 }
 

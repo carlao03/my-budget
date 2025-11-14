@@ -24,26 +24,34 @@ export default function LoginPage() {
 
     console.log("[v0] Login: Starting login process for", email)
 
-    const result = await loginAction(email, password)
+    try {
+      const result = await loginAction(email, password)
 
-    console.log("[v0] Login: Result from loginAction:", result)
+      console.log("[v0] Login: Result from loginAction:", result)
+      console.log("[v0] Login: Result type:", typeof result)
+      console.log("[v0] Login: Result keys:", result ? Object.keys(result) : "null")
 
-    if (result?.error) {
-      console.log("[v0] Login: Error occurred:", result.error)
-      setError(result.error)
-      setIsLoading(false)
-    } else if (result?.success && result?.user) {
-      console.log("[v0] Login: Success! Saving user to localStorage:", result.user)
-      localStorage.setItem("currentUser", JSON.stringify(result.user))
+      if (result?.error) {
+        console.log("[v0] Login: Error occurred:", result.error)
+        setError(result.error)
+        setIsLoading(false)
+      } else if (result?.success && "user" in result && result.user) {
+        console.log("[v0] Login: Success! Saving user to localStorage:", result.user)
+        localStorage.setItem("currentUser", JSON.stringify(result.user))
 
-      const saved = localStorage.getItem("currentUser")
-      console.log("[v0] Login: Verified localStorage:", saved)
+        const saved = localStorage.getItem("currentUser")
+        console.log("[v0] Login: Verified localStorage:", saved)
 
-      console.log("[v0] Login: Redirecting to dashboard")
-      router.push("/dashboard")
-    } else {
-      console.log("[v0] Login: Unexpected result format:", result)
-      setError("Erro inesperado ao fazer login")
+        console.log("[v0] Login: Redirecting to dashboard")
+        router.push("/dashboard")
+      } else {
+        console.log("[v0] Login: Unexpected result format:", result)
+        setError("Erro inesperado ao fazer login")
+        setIsLoading(false)
+      }
+    } catch (error) {
+      console.error("[v0] Login: Exception caught:", error)
+      setError("Erro de comunicação com o servidor")
       setIsLoading(false)
     }
   }

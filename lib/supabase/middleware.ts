@@ -29,21 +29,22 @@ export async function updateSession(request: NextRequest) {
     data: { user },
   } = await supabase.auth.getUser()
 
+  // Categorize the request path once so we can allow Next.js internal endpoints (e.g. server actions)
+  const pathname = request.nextUrl.pathname
+  const isAuthPage = pathname.startsWith("/login") || pathname.startsWith("/register")
+  const isAuthFlow = pathname.startsWith("/auth")
+  const isLanding = pathname === "/"
+  const isNextInternal = pathname.startsWith("/_next") || pathname === "/favicon.ico"
+
   // Redirect to login if not authenticated and trying to access protected routes
-  if (
-    !user &&
-    !request.nextUrl.pathname.startsWith("/login") &&
-    !request.nextUrl.pathname.startsWith("/register") &&
-    !request.nextUrl.pathname.startsWith("/auth") &&
-    request.nextUrl.pathname !== "/"
-  ) {
+  if (!user && !isAuthPage && !isAuthFlow && !isLanding && !isNextInternal) {
     const url = request.nextUrl.clone()
     url.pathname = "/login"
     return NextResponse.redirect(url)
   }
 
   // Redirect to dashboard if authenticated and trying to access login/register
-  if (user && (request.nextUrl.pathname === "/login" || request.nextUrl.pathname === "/register")) {
+  if (user && (pathname === "/login" || pathname === "/register")) {
     const url = request.nextUrl.clone()
     url.pathname = "/dashboard"
     return NextResponse.redirect(url)
