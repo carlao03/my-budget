@@ -9,6 +9,7 @@ import { Label } from "@/components/ui/label"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import Link from "next/link"
 import { useRouter } from "next/navigation"
+import { useAuth } from "@/lib/auth-context"
 
 export default function LoginPage() {
   const [email, setEmail] = useState("")
@@ -16,6 +17,7 @@ export default function LoginPage() {
   const [error, setError] = useState("")
   const [isLoading, setIsLoading] = useState(false)
   const router = useRouter()
+  const { setUser } = useAuth()
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -49,6 +51,7 @@ export default function LoginPage() {
         if (user) {
           console.log("[v0] Login: Success! Saving user to localStorage:", user)
           localStorage.setItem("currentUser", JSON.stringify(user))
+          setUser(user)
 
           const saved = localStorage.getItem("currentUser")
           console.log("[v0] Login: Verified localStorage:", saved)
